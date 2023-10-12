@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% load static %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'w3.css' %}">
+	<meta charset="UTF-8">
+	<title>Submit a Report</title>
+    <style>
+    </style>
+</head>
+<body  style="background-color:rgb(72, 83, 84)">
+    <div class="w3-bar w3-teal w3-card w3-left-align w3-large">
+        <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-teal" href="javascript:void(0);" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+        <a href="{% url 'home' %}" class="w3-bar-item w3-button w3-padding-large w3-white">Home</a>
+        <a href="{% url 'submit_report' %}" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Submit Report</a>
+        <a href="{% url 'all_reports' %}" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">View Reports</a>
+      </div>
+
+    <table class="table table-striped table-dark" style="margin: 20px;">
+        <thead>
+          <tr>
+            <th scope="col">Report Number</th>
+            <th scope="col"> Patient Name</th>
+            <th scope="col">Years of Diabetes</th>
+            <th scope="col">Weight</th>
+            <th scope="col">Left-Eye</th>
+            <th scope="col">Right-Eye</th>
+            <th scope="col">Report</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for report in reports %}
+          <tr>
+            <th scope="row">{{report.id}}</th>
+            <td>{{report.patient_name}}</td>
+            <td>{{report.years_diabetes}}</td>
+            <td>{{report.weight}}</td>
+            <td>  <img class="card-img-top" src="{{report.leftRetina.url}}" alt="Card image cap"></td>
+            <td>    <img class="card-img-top" src="{{report.rightRetina.url}}" alt="Card image cap"></td>
+            <td><a class= "reportButton btn btn-primary" href = "#" data-left="{{report.leftRetina}}" data-right="{{report.rightRetina}}" data-id = "{{report.id}}">  Generate Report </a> 
+                <p id="left_message{{report.id}}" style="text-align: center"></p>
+                <p id="right_message{{report.id}}" style="text-align: center"></p> </td>
+            {% comment %} <h3 style="text-align: center"></h3>
+        <img src = "{{report.leftRetina.url}}">
+        <img src = "{{report.rightRetina.url}}">
+        <a class= "reportButton" href = "#" data-left="{{report.leftRetina}}" data-right="{{report.rightRetina}}" data-id = "{{report.id}}">  Generate Report </a>
+        {% endcomment %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+
+<!-- old style  -->
+    <!-- <div class="container" style="text-align: center;">
+	{% for report in reports %}
+    <div class="card" style="width: 50rem;">
+        <h5 class="card-title" style="text-align: center;">Report Number: {{report.id}} Patient Name: {{report.patient_name}}</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <figure>
+                <img class="card-img-top" src="{{report.leftRetina.url}}" alt="Card image cap">
+                <figcaption>Left Eye</figcaption>
+                </figure>
+            </div>
+            <div class="col-md-6">
+                <figure>
+                    <img class="card-img-top" src="{{report.rightRetina.url}}" alt="Card image cap">
+                    <figcaption>Right Eye</figcaption>
+                </figure>
+            </div>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{report.years_diabetes}} Years of Diabetes Weight: {{report.weight}} Kg</h5>
+          <a class= "reportButton btn btn-primary" href = "#" data-left="{{report.leftRetina}}" data-right="{{report.rightRetina}}" data-id = "{{report.id}}">  Generate Report </a> 
+          <p id="left_message{{report.id}}" style="text-align: center"></p>
+          <p id="right_message{{report.id}}" style="text-align: center"></p> 
+        </div>
+    </div>
+    <br>
+    <br>
+        {% comment %} <h3 style="text-align: center"></h3>
+        <img src = "{{report.leftRetina.url}}">
+        <img src = "{{report.rightRetina.url}}">
+        <a class= "reportButton" href = "#" data-left="{{report.leftRetina}}" data-right="{{report.rightRetina}}" data-id = "{{report.id}}">  Generate Report </a>
+        {% endcomment %}
+    {% endfor %}
+    </div> -->
+<!-- old  -->
+
+</body>
+        <!-- Footer -->
+<footer class="w3-container w3-padding-64 w3-center w3-opacity">  
+<h3>  <b>  <p style="color: rgb(246, 246, 246);">PROJECT PHASE 1</p></b></h3>
+</footer>
+</html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script type="text/javascript">
+$('.reportButton').click(function(){
+var left;
+var right;
+var id;
+left = $(this).attr("data-left");
+right = $(this).attr("data-right");
+id = $(this).attr("data-id");
+
+$.ajax(
+{
+    type:"GET",
+    url: "{% url 'generate_report' %}",
+    data:{
+            left_img: left,
+            right_img: right,
+    },
+    success: function( data ) 
+    {
+        console.log(data);
+        $('#left_message'+id).text(data.left_message);
+        $('#right_message'+id).text(data.right_message);
+
+    }
+ })
+});
+</script>
+{% comment %} <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> {% endcomment %}
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
