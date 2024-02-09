@@ -34,7 +34,7 @@ import os
 import pandas as pd
 
 data = pd.read_csv("trainLabels.csv")
-model = tf.keras.models.load_model("/Users/bimalboby/Desktop/Diabetic-Retinopathy-Detector/helper/Models/model-mobile-net.h5")
+model = tf.keras.models.load_model("/Users/bimalboby/Desktop/DRD-Project/Models/model-mobile-net.h5")
 image_location = './media/'
 files = os.listdir(image_location)
 class_list = ['No_DR', 'Mild_DR', 'Moderate_DR', 'Severe_DR', 'Proliferative_DR']
